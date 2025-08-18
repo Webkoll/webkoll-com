@@ -5,8 +5,8 @@ backend:
 media_library:
   name: cloudinary
   config:
-    cloud_name: YOUR_CLOUD_NAME
-    api_key: YOUR_API_KEY
+    cloud_name: da6yxjaqc
+    api_key: 421621133513911
 
 collections:
   - name: "portfolio"
