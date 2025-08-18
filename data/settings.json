@@ -1,0 +1,21 @@
+{
+  "about_image": "/images/ülő_programozó.svg",
+  "contact": {
+    "profile_pic": "/images/mackócsalád.webp",
+    "name": "Kollár Pál",
+    "title": "Webfejlesztő, A Webkoll alapítója",
+    "email": "hello@webkoll.com",
+    "phone": "+36 70 905 5576",
+    "location": "2014 Csobánka, Magyarország",
+    "facebook": "#",
+    "instagram": "#",
+    "linkedin": "#",
+    "github": "#"
+  },
+  "quote_options": [
+    "Landing oldal",
+    "Céges weboldal",
+    "Portfólió oldal",
+    "Webáruház (alap)"
+  ]
+}
