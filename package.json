@@ -1,0 +1,14 @@
+{
+  "name": "webkoll-site-builder",
+  "version": "1.0.0",
+  "description": "Build script for generating content API from markdown files.",
+  "main": "build-content.js",
+  "scripts": {
+    "build": "node build-content.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "gray-matter": "^4.0.3"
+  }
+}

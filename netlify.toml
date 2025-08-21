@@ -1,0 +1,7 @@
+[build]
+  command = "npm install && npm run build"
+  publish = "/"
+
+[functions]
+  node_bundler = "esbuild"
+  included_files = ["!node_modules/gray-matter/test/**"]

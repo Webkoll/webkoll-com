@@ -80,7 +80,7 @@
                     <li><i class="fa-solid fa-wand-magic-sparkles"></i><div><strong>Több, Mint Egy Honlap: Digitális Élmény:</strong><p>A célunk nem csak az, hogy legyen egy weboldalad...</p></div></li>
                 </ul>
                 <div class="about-me-image-container">
-                    <img src="images/ülő_programozó.svg" alt="Webkoll - Professzionális weboldalkészítés">
+                    <img id="about-me-image" src="images/ülő_programozó.svg" alt="Webkoll - Professzionális weboldalkészítés">
                 </div>
             </div>
         </section>
@@ -104,7 +104,9 @@
                 <h2>Munkáink</h2>
                 <div class="section-icon"><i class="fa-solid fa-laptop-code"></i></div>
                 <div class="swiper portfolio-swiper">
-                    <div class="swiper-wrapper" id="portfolio-grid"></div>
+                    <div class="swiper-wrapper" id="portfolio-grid">
+                        <!-- JS Tölti fel -->
+                    </div>
                     <div class="swiper-button-next"></div>
                     <div class="swiper-button-prev"></div>
                 </div>
@@ -117,84 +119,80 @@
             <div class="container">
                 <h2>Érdekességek / Blog</h2>
                 <div class="section-icon"><i class="fa-solid fa-feather-pointed"></i></div>
-                <div id="blog-posts"></div>
+                <div id="blog-posts">
+                    <!-- JS Tölti fel -->
+                </div>
             </div>
         </section>
         <!-- === END OF BLOG SZEKCIÓ === -->
         
        <!-- === ÁRAJÁNLATKÉRÉS SZEKCIÓ (FRISSÍTETT) === -->
-<section id="arajanlat" class="content-section">
-    <div class="container">
-        <h2>Kérj személyre szabott árajánlatot!</h2>
-        <div class="section-icon">
-            <i class="fa-solid fa-file-signature"></i>
-        </div>
-        <p>Töltsd ki az űrlapot, és segíts, hogy megértsem a céljaidat. Így tudok a legpontosabb ajánlatot adni.</p>
-        
-        <form id="quote-form" action="https://formspree.io/f/mkgzarjk" method="POST">
-            <!-- Rejtett mezők -->
-            <input type="hidden" name="_subject" value="Új weboldal árajánlatkérés érkezett!">
-            <input type="hidden" name="_replyto" id="form-replyto">
-            <input type="hidden" name="Árajánlatkérés Részletei" id="form-details">
+        <section id="arajanlat" class="content-section">
+            <div class="container">
+                <h2>Kérj személyre szabott árajánlatot!</h2>
+                <div class="section-icon">
+                    <i class="fa-solid fa-file-signature"></i>
+                </div>
+                <p>Töltsd ki az űrlapot, és segíts, hogy megértsem a céljaidat. Így tudok a legpontosabb ajánlatot adni.</p>
+                
+                <form id="quote-form" action="https://formspree.io/f/mkgzarjk" method="POST">
+                    <input type="hidden" name="_subject" value="Új weboldal árajánlatkérés érkezett!">
+                    <input type="hidden" name="_replyto">
 
-            <!-- Látható mezők -->
-            <label for="form-name">Neved:</label>
-            <input type="text" id="form-name" required>
-            
-            <label for="form-email">E-mail címed:</label>
-            <input type="email" id="form-email" required>
+                    <label for="form-name">Neved:</label>
+                    <input type="text" id="form-name" name="name" required>
+                    
+                    <label for="form-email">E-mail címed:</label>
+                    <input type="email" id="form-email" name="email" required>
 
-            <label for="form-phone">Telefonszámod (opcionális):</label>
-            <input type="tel" id="form-phone">
-    
-            <label>Milyen típusú weboldalra van szükséged?</label>
-            <select id="form-type">
-                <!-- A JS tölti fel -->
-            </select>
+                    <label for="form-phone">Telefonszámod (opcionális):</label>
+                    <input type="tel" id="form-phone" name="phone">
             
-            <label>Milyen extra funkciókat szeretnél?</label>
+                    <label>Milyen típusú weboldalra van szükséged?</label>
+                    <select id="form-type" name="website_type">
+                        <!-- JS Tölti fel -->
+                    </select>
+                    
+                    <label>Milyen extra funkciókat szeretnél?</label>
+                    <div class="checkbox-group" id="form-features">
+                        <div class="checkbox-tag">
+                            <input type="checkbox" id="blog-feature" name="features[]" value="Blog / Hírek">
+                            <label for="blog-feature"><i class="fa-solid fa-feather-pointed"></i> Blog / Hírek</label>
+                        </div>
+                        <div class="checkbox-tag">
+                            <input type="checkbox" id="gallery-feature" name="features[]" value="Képgaléria">
+                            <label for="gallery-feature"><i class="fa-solid fa-images"></i> Képgaléria</label>
+                        </div>
+                        <div class="checkbox-tag">
+                            <input type="checkbox" id="newsletter-feature" name="features[]" value="Hírlevél">
+                            <label for="newsletter-feature"><i class="fa-solid fa-envelope-open-text"></i> Hírlevél</label>
+                        </div>
+                        <div class="checkbox-tag">
+                            <input type="checkbox" id="multilang-feature" name="features[]" value="Többnyelvűség">
+                            <label for="multilang-feature"><i class="fa-solid fa-language"></i> Többnyelvűség</label>
+                        </div>
+                        <div class="checkbox-tag">
+                            <input type="checkbox" id="animation-feature" name="features[]" value="Egyedi Animációk">
+                            <label for="animation-feature"><i class="fa-solid fa-wand-magic-sparkles"></i> Egyedi Animációk</label>
+                        </div>
+                        <div class="checkbox-tag">
+                            <input type="checkbox" id="cms-feature" name="features[]" value="Kezelőfelület (CMS)">
+                            <label for="cms-feature"><i class="fa-solid fa-pen-to-square"></i> Kezelőfelület (CMS)</label>
+                        </div>
+                         <div class="checkbox-tag">
+                            <input type="checkbox" id="integration-feature" name="features[]" value="Külső Integráció">
+                            <label for="integration-feature"><i class="fa-solid fa-puzzle-piece"></i> Külső Integráció</label>
+                        </div>
+                    </div>
             
-            <!-- JAVÍTOTT GOMBOS RÉSZ KEZDETE -->
-            <div class="checkbox-group" id="form-features">
-                <div class="checkbox-tag">
-                    <input type="checkbox" id="blog-feature" value="Blog / Hírek">
-                    <label for="blog-feature"><i class="fa-solid fa-feather-pointed"></i> Blog / Hírek</label>
-                </div>
-                <div class="checkbox-tag">
-                    <input type="checkbox" id="gallery-feature" value="Képgaléria">
-                    <label for="gallery-feature"><i class="fa-solid fa-images"></i> Képgaléria</label>
-                </div>
-                <div class="checkbox-tag">
-                    <input type="checkbox" id="newsletter-feature" value="Hírlevél">
-                    <label for="newsletter-feature"><i class="fa-solid fa-envelope-open-text"></i> Hírlevél</label>
-                </div>
-                <div class="checkbox-tag">
-                    <input type="checkbox" id="multilang-feature" value="Többnyelvűség">
-                    <label for="multilang-feature"><i class="fa-solid fa-language"></i> Többnyelvűség</label>
-                </div>
-                <div class="checkbox-tag">
-                    <input type="checkbox" id="animation-feature" value="Egyedi Animációk">
-                    <label for="animation-feature"><i class="fa-solid fa-wand-magic-sparkles"></i> Egyedi Animációk</label>
-                </div>
-                <div class="checkbox-tag">
-                    <input type="checkbox" id="cms-feature" value="Kezelőfelület (CMS)">
-                    <label for="cms-feature"><i class="fa-solid fa-pen-to-square"></i> Kezelőfelület (CMS)</label>
-                </div>
-                 <div class="checkbox-tag">
-                    <input type="checkbox" id="integration-feature" value="Külső Integráció">
-                    <label for="integration-feature"><i class="fa-solid fa-puzzle-piece"></i> Külső Integráció</label>
-                </div>
+                    <label for="form-message">Projekt leírása (opcionális):</label>
+                    <textarea id="form-message" name="message" rows="5" placeholder="Írd le röviden az elképzeléseidet, céljaidat, esetleg mutass egy-két példaoldalt, ami tetszik..."></textarea>
+                    
+                    <button type="submit" class="btn-custom">Ajánlatot kérek!</button>
+                </form>
+                <div id="form-feedback" class="form-feedback-message"></div> 
             </div>
-            <!-- JAVÍTOTT GOMBOS RÉSZ VÉGE -->
-    
-            <label for="form-message">Projekt leírása (opcionális):</label>
-            <textarea id="form-message" rows="5" placeholder="Írd le röviden az elképzeléseidet, céljaidat, esetleg mutass egy-két példaoldalt, ami tetszik..."></textarea>
-            
-            <button type="submit" class="btn-custom">Ajánlatot kérek!</button>
-        </form>
-        <div id="form-feedback" class="form-feedback-message"></div> 
-    </div>
-</section>
+        </section>
         <!-- === END OF ÁRAJÁNLATKÉRÉS SZEKCIÓ === -->
         
         <!-- === KAPCSOLAT SZEKCIÓ === -->
@@ -204,19 +202,19 @@
                 <div class="section-icon"><i class="fa-solid fa-paper-plane"></i></div>
                 <div class="contact-wrapper">
                     <div class="contact-info">
-                        <img src="images/mackócsalád.webp" alt="Kollár Pál" class="profile-pic">
-                        <h3>Kollár Pál</h3>
-                        <p class="job-title">Webfejlesztő, A Webkoll alapítója</p>
+                        <img src="images/mackócsalád.webp" alt="Kapcsolattartó" class="profile-pic" id="contact-profile-pic">
+                        <h3 id="contact-name">Kollár Pál</h3>
+                        <p class="job-title" id="contact-job-title">Webfejlesztő, A Webkoll alapítója</p>
                         <ul>
-                            <li><i class="fa-solid fa-envelope"></i> <a href="mailto:hello@webkoll.com">hello@webkoll.com</a></li>
-                            <li><i class="fa-solid fa-phone"></i> <a href="tel:+36709055576">+36 70 905 5576</a></li>
-                            <li><i class="fa-solid fa-location-dot"></i> 2014 Csobánka, Magyarország</li>
+                            <li><i class="fa-solid fa-envelope"></i> <a href="mailto:hello@webkoll.com" id="contact-email">hello@webkoll.com</a></li>
+                            <li><i class="fa-solid fa-phone"></i> <a href="tel:+36709055576" id="contact-phone">+36 70 905 5576</a></li>
+                            <li><i class="fa-solid fa-location-dot"></i> <span id="contact-location">2014 Csobánka, Magyarország</span></li>
                         </ul>
-                        <div class="social-icons">
-                            <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                            <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                            <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-                            <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                        <div class="social-icons" id="contact-socials">
+                            <a href="#" aria-label="Facebook" id="contact-facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                            <a href="#" aria-label="Instagram" id="contact-instagram"><i class="fa-brands fa-instagram"></i></a>
+                            <a href="#" aria-label="LinkedIn" id="contact-linkedin"><i class="fa-brands fa-linkedin-in"></i></a>
+                            <a href="#" aria-label="GitHub" id="contact-github"><i class="fa-brands fa-github"></i></a>
                         </div>
                     </div>
                     <div class="contact-form-container">
@@ -256,19 +254,19 @@
             <div class="footer-contact">
                 <h4>Kapcsolat</h4>
                 <ul>
-                    <li><i class="fa-solid fa-envelope"></i> <a href="mailto:hello@webkoll.com">hello@webkoll.com</a></li>
-                    <li><i class="fa-solid fa-phone"></i> <a href="tel:+36709055576">+36 70 905 5576</a></li>
+                    <li><i class="fa-solid fa-envelope"></i> <a href="mailto:hello@webkoll.com" id="footer-contact-email">hello@webkoll.com</a></li>
+                    <li><i class="fa-solid fa-phone"></i> <a href="tel:+36709055576" id="footer-contact-phone">+36 70 905 5576</a></li>
                 </ul>
-                <div class="social-icons">
-                     <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-                     <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
-                     <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
-                     <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+                <div class="social-icons" id="footer-socials">
+                     <a href="#" aria-label="Facebook" id="footer-facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                     <a href="#" aria-label="Instagram" id="footer-instagram"><i class="fa-brands fa-instagram"></i></a>
+                     <a href="#" aria-label="LinkedIn" id="footer-linkedin"><i class="fa-brands fa-linkedin-in"></i></a>
+                     <a href="#" aria-label="GitHub" id="footer-github"><i class="fa-brands fa-github"></i></a>
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; <span id="current-year-footer"></span> Webkoll | Kollár Pál e.v. Minden jog fenntartva.</p>
+            <p>&copy; <span id="current-year-footer"></span> Webkoll | <span id="footer-owner">Kollár Pál e.v.</span> Minden jog fenntartva.</p>
         </div>
     </footer>
     <!-- === END OF LÁBLÉC === -->
@@ -284,6 +282,7 @@
     <!-- === END OF MODAL ABLAK === -->
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

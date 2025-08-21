@@ -27,45 +27,127 @@ document.addEventListener('DOMContentLoaded', function() {
     let portfolioData = [];
     let blogData = [];
 
-    // === DINAMIKUS TARTALOM BETÖLTÉSE ===
-    async function loadContent() {
+    // === ÚJ, DINAMIKUS TARTALOMBETÖLTŐ RÉSZ ===
+    async function initializeSite() {
         try {
-            const response = await fetch('data.json');
-            if (!response.ok) throw new Error(`HTTP hiba! Státusz: ${response.status}`);
-            const data = await response.json();
-            portfolioData = data.portfolio; 
-            blogData = data.blog;
+            const [contentResponse, settingsResponse] = await Promise.all([
+                fetch('/api/content.json?v=' + new Date().getTime()),
+                fetch('/_data/settings.json?v=' + new Date().getTime())
+            ]);
 
-            const portfolioGrid = document.getElementById('portfolio-grid');
-            if(portfolioGrid) {
-                portfolioGrid.innerHTML = '';
-                portfolioData.forEach(item => {
-                    const slide = document.createElement('div');
-                    slide.className = 'swiper-slide';
-                    let secondButtonHtml = (item.id === 6)
-                        ? `<a href="#arajanlat" class="btn-custom">Árajánlatkérés</a>`
-                        : `<a href="${item.link}" target="_blank" class="btn-custom">Weboldal</a>`;
-                    slide.innerHTML = `<div class="portfolio-item"><div class="portfolio-image-container"><img src="${item.image}" alt="${item.title}"></div><div class="portfolio-content"><h3>${item.title}</h3><p>${item.description}</p><div class="portfolio-buttons"><a href="#" class="btn-custom btn-details" data-project-id="${item.id}">Bővebben</a>${secondButtonHtml}</div></div></div>`;
-                    portfolioGrid.appendChild(slide);
-                });
-                if (window.swiper) { window.swiper.update(); }
-            }
+            if (!contentResponse.ok) throw new Error(`Hiba a tartalom betöltésekor: /api/content.json`);
+            const content = await contentResponse.json();
+            portfolioData = content.portfolio;
+            blogData = content.blog;
 
-            const blogPosts = document.getElementById('blog-posts');
-            if(blogPosts) {
-                blogPosts.innerHTML = '';
-                blogData.forEach(post => {
-                    const el = document.createElement('article');
-                    el.className = 'blog-post';
-                    el.innerHTML = `<h3>${post.title}</h3><p class="post-meta">Dátum: ${post.date}</p><p>${post.excerpt}</p><a href="#" class="read-more" data-post-id="${post.id}">Elolvasom &rarr;</a>`;
-                    blogPosts.appendChild(el);
-                });
-            }
-        } catch(error) {
-            console.error("Hiba a 'data.json' betöltésekor: ", error);
+            if (!settingsResponse.ok) throw new Error(`Hiba a beállítások betöltésekor: /_data/settings.json`);
+            const settings = await settingsResponse.json();
+
+            populatePortfolio(portfolioData);
+            populateBlog(blogData);
+            populateSettings(settings);
+
+        } catch (error) {
+            console.error("Hiba az oldal inicializálásakor: ", error);
         }
     }
-    loadContent();
+
+    function populatePortfolio(data) {
+        const portfolioGrid = document.getElementById('portfolio-grid');
+        if (!portfolioGrid) return;
+
+        portfolioGrid.innerHTML = '';
+        data.forEach(item => {
+            const slide = document.createElement('div');
+            slide.className = 'swiper-slide';
+            let secondButtonHtml = (item.title === "Az Ön következő oldala?")
+                ? `<a href="#arajanlat" class="btn-custom">Árajánlatkérés</a>`
+                : `<a href="${item.link}" target="_blank" rel="noopener noreferrer" class="btn-custom">Weboldal</a>`;
+            
+            slide.innerHTML = `
+                <div class="portfolio-item">
+                    <div class="portfolio-image-container"><img src="${item.image}" alt="${item.title}"></div>
+                    <div class="portfolio-content">
+                        <h3>${item.title}</h3>
+                        <p>${item.description}</p>
+                        <div class="portfolio-buttons">
+                            <a href="#" class="btn-custom btn-details" data-project-id="${item.id}">Bővebben</a>
+                            ${secondButtonHtml}
+                        </div>
+                    </div>
+                </div>`;
+            portfolioGrid.appendChild(slide);
+        });
+
+        if (window.swiper) {
+            window.swiper.update();
+        }
+    }
+
+    function populateBlog(data) {
+        const blogPosts = document.getElementById('blog-posts');
+        if (!blogPosts) return;
+
+        blogPosts.innerHTML = '';
+        data.forEach(post => {
+            const el = document.createElement('article');
+            el.className = 'blog-post';
+            el.innerHTML = `
+                <h3>${post.title}</h3>
+                <p class="post-meta">Dátum: ${post.date}</p>
+                <p>${post.excerpt}</p>
+                <a href="#" class="read-more" data-post-id="${post.id}">Elolvasom &rarr;</a>`;
+            blogPosts.appendChild(el);
+        });
+    }
+
+    function populateSettings(settings) {
+        // "Miért mi?" szekció képe
+        const aboutImage = document.getElementById('about-me-image');
+        if (aboutImage && settings.about_image) {
+            aboutImage.src = settings.about_image;
+        }
+
+        // Kapcsolat szekció
+        const contact = settings.contact || {};
+        document.getElementById('contact-profile-pic').src = contact.profile_pic || 'images/mackócsalád.webp';
+        document.getElementById('contact-name').textContent = contact.name || 'Kollár Pál';
+        document.getElementById('contact-job-title').textContent = contact.title || 'Webfejlesztő';
+        document.getElementById('contact-email').href = `mailto:${contact.email || ''}`;
+        document.getElementById('contact-email').textContent = contact.email || '';
+        document.getElementById('contact-phone').href = `tel:${(contact.phone || '').replace(/\s/g, '')}`;
+        document.getElementById('contact-phone').textContent = contact.phone || '';
+        document.getElementById('contact-location').textContent = contact.location || '';
+        document.getElementById('contact-facebook').href = contact.facebook || '#';
+        document.getElementById('contact-instagram').href = contact.instagram || '#';
+        document.getElementById('contact-linkedin').href = contact.linkedin || '#';
+        document.getElementById('contact-github').href = contact.github || '#';
+
+        // Lábléc kapcsolat
+        document.getElementById('footer-contact-email').href = `mailto:${contact.email || ''}`;
+        document.getElementById('footer-contact-email').textContent = contact.email || '';
+        document.getElementById('footer-contact-phone').href = `tel:${(contact.phone || '').replace(/\s/g, '')}`;
+        document.getElementById('footer-contact-phone').textContent = contact.phone || '';
+        document.getElementById('footer-facebook').href = contact.facebook || '#';
+        document.getElementById('footer-instagram').href = contact.instagram || '#';
+        document.getElementById('footer-linkedin').href = contact.linkedin || '#';
+        document.getElementById('footer-github').href = contact.github || '#';
+        document.getElementById('footer-owner').textContent = `${contact.name || 'Kollár Pál'} e.v.`;
+
+        // Árajánlatkérő űrlap opciói
+        const quoteTypeSelect = document.getElementById('form-type');
+        if (quoteTypeSelect && settings.quote_options) {
+            quoteTypeSelect.innerHTML = '';
+            settings.quote_options.forEach(option => {
+                const optEl = document.createElement('option');
+                optEl.value = option;
+                optEl.textContent = option;
+                quoteTypeSelect.appendChild(optEl);
+            });
+        }
+    }
+
+    initializeSite();
     // === END OF DINAMIKUS TARTALOM ===
 
     // === MUNKÁIM SLIDESHOW INICIALIZÁLÁSA ===
@@ -88,33 +170,46 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     // === END OF MUNKÁIM SLIDESHOW ===
 
-    // === MODAL ABLAK LOGIKÁJA ===
+    // === MODAL ABLAK LOGIKÁJA (FRISSÍTVE) ===
     const modal = document.getElementById('portfolio-modal');
     const modalTitle = document.getElementById('modal-title');
     const modalBody = document.getElementById('modal-body');
     const closeModalBtn = document.querySelector('.modal-close');
 
-    async function openModal(item) {
+    function openModal(item) {
         modalTitle.textContent = item.title;
-        modalBody.innerHTML = '<p>Tartalom betöltése...</p>';
-        modal.classList.add('active');
-        if (!item.details_url) { modalBody.innerHTML = '<p>Nincs elérhető részletes leírás.</p>'; return; }
-        try {
-            const response = await fetch(item.details_url);
-            if (!response.ok) throw new Error('A leírás nem található.');
-            modalBody.innerHTML = await response.text();
-        } catch (error) {
-            modalBody.innerHTML = `<p>Hiba a tartalom betöltése közben.</p>`; console.error(error);
+        if (item.body && typeof marked !== 'undefined') {
+            modalBody.innerHTML = marked.parse(item.body);
+        } else if (item.body) {
+            modalBody.innerHTML = item.body.replace(/\n/g, '<br>'); // Fallback if marked.js fails
+        } else {
+            modalBody.innerHTML = '<p>Nincs elérhető részletes leírás.</p>';
         }
+        modal.classList.add('active');
     }
+
     function closeModal() { modal.classList.remove('active'); modalBody.innerHTML = ''; }
+
     document.addEventListener('click', function(e) {
         const detailsButton = e.target.closest('.btn-details');
-        if (detailsButton) { e.preventDefault(); const projectId = parseInt(detailsButton.dataset.projectId); const project = portfolioData.find(p => p.id === projectId); if (project) openModal(project); }
+        if (detailsButton) {
+            e.preventDefault();
+            const projectId = detailsButton.dataset.projectId;
+            const project = portfolioData.find(p => p.id === projectId);
+            if (project) openModal(project);
+        }
         const readMoreLink = e.target.closest('.read-more');
-        if (readMoreLink) { e.preventDefault(); const postId = parseInt(readMoreLink.dataset.postId); const post = blogData.find(p => p.id === postId); if (post) openModal(post); }
-        if (e.target.closest('#modal-body a[href="#arajanlat"]')) { closeModal(); }
+        if (readMoreLink) {
+            e.preventDefault();
+            const postId = readMoreLink.dataset.postId;
+            const post = blogData.find(p => p.id === postId);
+            if (post) openModal(post);
+        }
+        if (e.target.closest('#modal-body a[href="#arajanlat"]')) {
+            closeModal();
+        }
     });
+
     closeModalBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
@@ -134,6 +229,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleFormSubmit(form, feedbackElement) {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
+
+            // Automatikus _replyto beállítása a Formspree számára
+            const emailInput = form.querySelector('input[name="email"]');
+            const replyToInput = form.querySelector('input[name="_replyto"]');
+            if(emailInput && replyToInput) {
+                replyToInput.value = emailInput.value;
+            }
+
             const formData = new FormData(form);
             const action = form.getAttribute('action');
             feedbackElement.style.display = 'block';
@@ -145,7 +248,13 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (response.ok) {
                         feedbackElement.innerHTML = '<h3>Köszönjük!</h3><p>Az üzenetedet sikeresen megkaptuk. Hamarosan felvesszük veled a kapcsolatot.</p>';
                     } else {
-                        feedbackElement.innerHTML = '<h3>Hiba történt.</h3><p>Kérlek, próbáld újra később, vagy írj nekünk közvetlenül.</p>';
+                        response.json().then(data => {
+                             if (Object.hasOwn(data, 'errors')) {
+                                feedbackElement.innerHTML = `<h3>Hiba történt.</h3><p>${data["errors"].map(error => error["message"]).join(", ")}</p>`;
+                             } else {
+                                feedbackElement.innerHTML = '<h3>Hiba történt.</h3><p>Kérlek, próbáld újra később, vagy írj nekünk közvetlenül.</p>';
+                             }
+                        })
                     }
                 })
                 .catch(error => {
