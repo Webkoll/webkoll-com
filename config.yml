@@ -1,0 +1,60 @@
+backend:
+  name: git-gateway
+  branch: main # Vagy 'master', attól függően, mi a fő ágad a GitHubon
+
+media_library:
+  name: cloudinary
+  config:
+    cloud_name: da6yxjaqc
+    api_key: 421621133513911
+
+collections:
+  - name: "portfolio"
+    label: "Munkáim (Portfólió)"
+    folder: "_portfolio"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Cím", name: "title", widget: "string" }
+      - { label: "Borítókép", name: "image", widget: "image" }
+      - { label: "Rövid leírás (a kártyára)", name: "description", widget: "text" }
+      - { label: "Weboldal Linkje", name: "link", widget: "string" }
+      - { label: "Részletes leírás (Modal ablakba)", name: "body", widget: "markdown" }
+
+  - name: "blog"
+    label: "Blog Bejegyzések"
+    folder: "_blog"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "Cím", name: "title", widget: "string" }
+      - { label: "Publikálás Dátuma", name: "date", widget: "datetime" }
+      - { label: "Rövid kivonat (a kártyára)", name: "excerpt", widget: "text" }
+      - { label: "Teljes bejegyzés (Modal ablakba)", name: "body", widget: "markdown" }
+
+  - name: "settings"
+    label: "Oldal Beállítások"
+    files:
+      - file: "_data/settings.json"
+        label: "Általános Beállítások"
+        name: "general_settings"
+        fields:
+          - { label: "Kép a 'Miért Mi?' szekcióban", name: "about_image", widget: "image" }
+          - label: "Kapcsolat"
+            name: "contact"
+            widget: "object"
+            fields:
+              - { label: "Profilkép", name: "profile_pic", widget: "image" }
+              - { label: "Név", name: "name", widget: "string" }
+              - { label: "Beosztás", name: "title", widget: "string" }
+              - { label: "E-mail", name: "email", widget: "string" }
+              - { label: "Telefon", name: "phone", widget: "string" }
+              - { label: "Helyszín", name: "location", widget: "string" }
+              - { label: "Facebook URL", name: "facebook", widget: "string" }
+              - { label: "Instagram URL", name: "instagram", widget: "string" }
+              - { label: "LinkedIn URL", name: "linkedin", widget: "string" }
+              - { label: "GitHub URL", name: "github", widget: "string" }
+          - label: "Árajánlatkérő Opciók"
+            name: "quote_options"
+            widget: "list"
+            field: { label: "Opció", name: "option", widget: "string" }
