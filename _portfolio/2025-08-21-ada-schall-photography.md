@@ -6,19 +6,17 @@ description: Ez a weboldal WordPress alapokon készült, reszponzív dizájnnal 
   láthatóvá váljon és könnyedén kapcsolatot teremtsen az érdeklődőkkel.
 link: https://adaschall.com/
 ---
+![](https://res.cloudinary.com/da6yxjaqc/video/upload/v1755776810/AdaSchall_lppiav.mp4)
+
 <!--StartFragment-->
 
 <video autoplay muted loop playsinline src="videos/Adaschall.mp4"></video>
-
-
 
 <p>
 
     Az elkészült weboldal célja, hogy Ada Schall portfólióját modern és áttekinthető formában mutassa be az érdeklődőknek. A honlap WordPress platformon készült, amely lehetővé teszi a tartalom könnyű frissítését, karbantartását és bővítését. A reszponzív dizájn biztosítja, hogy a weboldal minden eszközön – mobilon, tableten és asztali számítógépen – tökéletesen jelenjen meg, így a látogatók minden körülmények között élvezhetik a fotók vizuális élményét.
 
 </p>
-
-
 
 <h4 style="margin-top: 2rem;">Főbb Jellemzők és Megoldások</h4>
 
@@ -67,8 +65,6 @@ link: https://adaschall.com/
     </li>
 
 </ul>
-
-
 
 <h4 style="margin-top: 2rem;">Összegzés</h4>
 
