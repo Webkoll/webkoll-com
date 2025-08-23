@@ -283,81 +283,27 @@ footer .social-icons a { color: #ffffff;padding: 5px;}
     .nav-menu li { margin: 0; }
     .nav-menu a { font-size: 1.5rem; }
 }
-/* === MOBILNÉZET FINOMHANGOLÁSA (768px alatt) === */
+/* --- Modal ablak javítások (Mobilnézetre) --- */
 @media (max-width: 768px) {
-
-    /* --- Modal és Blog listák javítása (ikonok problémája) --- */
-    
-
-    #modal-body ul li i,
-    .blog-post ul li i {
-        /* Kisebb ikont és távolságot adunk, hogy ne lógjon ki */
-        font-size: 1.5rem;
-        margin-right: 15px; 
-        margin-top: 3px; /* Finomhangolás a függőleges igazításhoz */
-        align-items: center; /* Biztosítja a helyes igazítást */
-    }
-
-    /* --- Árajánlatkérő gombok mobilnézete --- */
-    #quote-form .checkbox-group {
-        /* A flexbox helyett a gombok egymás alá kerülnek */
-        display: block;
-    }
-
-    #quote-form .checkbox-tag {
-        /* Minden gomb 100% széles lesz */
-        width: 100%;
-        margin-bottom: 0.75rem; /* Térköz a gombok között */
-    }
-
-    #quote-form .checkbox-tag label {
-        /* A címke is 100% széles, és középre igazítja a tartalmát */
-        width: 100%;
-        justify-content: center;
-    }
-
-    /* --- Lábléc mobilnézete --- */
-    .footer-container {
-        text-align: center; /* Minden szöveget középre igazít a láblécben */
-    }
-
-    .footer-links ul,
-    .footer-contact ul {
-        /* A listákat is középre rendezzük */
-        display: inline-block;
-        text-align: left; /* A listán belüli szöveg maradjon balra igazítva */
-        margin: 0 auto;
-    }
-    
-    .footer-contact .social-icons {
-        justify-content: center; /* A social ikonokat középre igazítjuk */
-        margin-top: 2rem;
-    }
-
-    .footer-links, .footer-contact {
-        /* Elválasztó vonal a szekciók között */
-        padding-top: 2rem;
-        margin-top: 2rem;
-        border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
+    /* Kisebb belső tér az ablakban, hogy a tartalom szélesebb lehessen */
     .modal-content {
         padding-left: 1.5rem;
         padding-right: 1.5rem;
     }
 
-    /* A lista elemek (ikon+cím+szöveg) új elrendezése */
+    /* A lista elemek (ikon+cím+szöveg) új, GOLYÓÁLLÓ elrendezése */
     #modal-body ul li {
-        display: block;      /* Megszüntetjük a flexbox-ot, hogy egymás alá kerüljenek az elemek */
-        text-align: center;  /* Minden tartalmat középre igazítunk */
-        margin-bottom: 2.5rem; /* Nagyobb térköz a listaelemek között */
+        display: flex;           /* Flexbox használata */
+        flex-direction: column;  /* Az elemek egymás alá kerülnek */
+        align-items: center;     /* Minden elemet VÍZSZINTESEN középre igazít */
+        text-align: center;      /* A szövegek is középre kerülnek */
+        margin-bottom: 2.5rem;
     }
 
-    /* Az ikonok stílusa: középre, a cím fölé */
+    /* Az ikonok stílusa */
     #modal-body ul li i {
-        display: block;         /* Az ikon is külön sorba kerül */
-        margin: 0 auto 1rem auto; /* Térköz alatta és középre igazítás */
-        font-size: 2rem;        /* Legyen egy kicsit hangsúlyosabb */
+        margin-bottom: 1rem;     /* Már csak alsó margó kell neki */
+        font-size: 2rem;
     }
 
     /* A lista elemeken belüli bekezdések is középre kerülnek */
@@ -366,7 +312,6 @@ footer .social-icons a { color: #ffffff;padding: 5px;}
     }
 
 }
-
 /* --- LÁBLÉC IKON IGAZÍTÁS (minden nézetre) --- */
 /* Ez megoldja, hogy az ikonok tökéletesen egy vonalban legyenek a szöveggel */
 .footer-contact li {
@@ -374,4 +319,4 @@ footer .social-icons a { color: #ffffff;padding: 5px;}
 }
 
 
-/* === END OF MOBILNAVIGÁCIÓ === */
+/* === END OF MOBILNAVIGÁCIÓ === 
