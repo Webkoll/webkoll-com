@@ -236,10 +236,10 @@ footer { background: var(--dark-text); color: var(--light-text); padding: 4rem 0
 .footer-links a, .footer-contact a { text-decoration: none; color: #ccc; transition: color 0.3s, padding-left 0.3s; display: block; margin-bottom: 0.8rem; }
 .footer-links a:hover { color: var(--light-green); padding-left: 5px; }
 .footer-contact li { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-.footer-contact li i { color: var(--primary-green); }
+.footer-contact li i { color: var(--primary-green); margin-bottom: 15px;}
 .footer-contact .social-icons { justify-content: flex-start; margin-top: 1.5rem; color: white; }
-footer .social-icons a { color: #fff;}
-.footer-bottom { background-color: #222; text-align: center; padding: 1.5rem 0; }
+footer .social-icons a { color: #ffffff;padding: 5px;}
+.footer-bottom { background-color: #000000; text-align: center; padding: 1.5rem 0; }
 .footer-bottom p { text-align: center; color: #aaa; font-size: 0.9rem; }
 @media (max-width: 992px) { .footer-container { grid-template-columns: 1fr; } .footer-about p { text-align: center; } }
 /* === END OF LÁBLÉC === */
@@ -271,5 +271,71 @@ footer .social-icons a { color: #fff;}
     .nav-menu.active { transform: translateX(0); }
     .nav-menu li { margin: 0; }
     .nav-menu a { font-size: 1.5rem; }
+}
+/* === MOBILNÉZET FINOMHANGOLÁSA (768px alatt) === */
+@media (max-width: 768px) {
+
+    /* --- Modal és Blog listák javítása (ikonok problémája) --- */
+    #modal-body ul li,
+    .blog-post ul li {
+        align-items: flex-start; /* Biztosítja a helyes igazítást */
+    }
+
+    #modal-body ul li i,
+    .blog-post ul li i {
+        /* Kisebb ikont és távolságot adunk, hogy ne lógjon ki */
+        font-size: 1.5rem;
+        margin-right: 15px; 
+        margin-top: 3px; /* Finomhangolás a függőleges igazításhoz */
+    }
+
+    /* --- Árajánlatkérő gombok mobilnézete --- */
+    #quote-form .checkbox-group {
+        /* A flexbox helyett a gombok egymás alá kerülnek */
+        display: block;
+    }
+
+    #quote-form .checkbox-tag {
+        /* Minden gomb 100% széles lesz */
+        width: 100%;
+        margin-bottom: 0.75rem; /* Térköz a gombok között */
+    }
+
+    #quote-form .checkbox-tag label {
+        /* A címke is 100% széles, és középre igazítja a tartalmát */
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* --- Lábléc mobilnézete --- */
+    .footer-container {
+        text-align: center; /* Minden szöveget középre igazít a láblécben */
+    }
+
+    .footer-links ul,
+    .footer-contact ul {
+        /* A listákat is középre rendezzük */
+        display: inline-block;
+        text-align: left; /* A listán belüli szöveg maradjon balra igazítva */
+        margin: 0 auto;
+    }
+    
+    .footer-contact .social-icons {
+        justify-content: center; /* A social ikonokat középre igazítjuk */
+        margin-top: 2rem;
+    }
+
+    .footer-links, .footer-contact {
+        /* Elválasztó vonal a szekciók között */
+        padding-top: 2rem;
+        margin-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* --- LÁBLÉC IKON IGAZÍTÁS (minden nézetre) --- */
+/* Ez megoldja, hogy az ikonok tökéletesen egy vonalban legyenek a szöveggel */
+.footer-contact li {
+    align-items: center;
 }
 /* === END OF MOBILNAVIGÁCIÓ === */
