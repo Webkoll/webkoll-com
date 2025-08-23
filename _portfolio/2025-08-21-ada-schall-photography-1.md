@@ -10,11 +10,19 @@ link: https://adaschall.com/
 
 <!--StartFragment-->
 
-<video autoplay muted loop playsinline src="<!--StartFragment-->
+```
+<iframe
+  src="https://player.cloudinary.com/embed/?cloud_name=da6yxjaqc&public_id=AdaSchall_lppiav&profile=cld-default"
+  width="640"
+  height="360" 
+  style="height: auto; width: 100%; aspect-ratio: 640 / 360;"
+  allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+  allowfullscreen
+  frameborder="0"
+></iframe>
+```
 
-<https://res.cloudinary.com/da6yxjaqc/video/upload/v1755776810/AdaSchall_lppiav.mp4>
-
-<!--EndFragment-->"></video>
+<!--EndFragment-->
 
 <p>
 
