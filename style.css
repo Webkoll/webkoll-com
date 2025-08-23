@@ -284,7 +284,7 @@ footer .social-icons a { color: #ffffff;padding: 5px;}
     .nav-menu a { font-size: 1.5rem; }
 }
 /* === MODAL ABLAK STÍLUSOK (MINDEN NÉZETRE) === */
-/* Itt adjuk vissza az elveszett, levegős stílust az asztali nézethez */
+/* Itt állítjuk be az ASZTALI/LAPTOP nézetet pontosan úgy, ahogy kérted */
 #modal-body ul {
     list-style: none;
     padding-left: 0;
@@ -296,13 +296,17 @@ footer .social-icons a { color: #ffffff;padding: 5px;}
 }
 #modal-body ul li i {
     font-size: 1.8rem;               /* Ikon mérete */
-    color: var(--primary-green);     /* Visszaadjuk a ZÖLD SZÍNT */
+    color: var(--primary-green);     /* Zöld szín */
     margin-right: 15px;              /* Térköz az ikon és a szöveg között */
     margin-top: 5px;                 /* Finomhangolás a függőleges igazításhoz */
     width: 30px;                     /* Fix szélesség a stabil elrendezéshez */
+    flex-shrink: 0;                  /* Megakadályozza az ikon zsugorodását */
 }
 #modal-body ul li div p {
     margin-top: 5px; /* Térköz a cím és a leírás között */
+}
+#modal-body h4 {
+    margin-top: 2rem; /* Térköz a H4 címek felett */
 }
 
 /* === LÁBLÉC IKON IGAZÍTÁS (minden nézetre) === */
@@ -337,7 +341,7 @@ footer .social-icons a { color: #ffffff;padding: 5px;}
     #modal-body ul li i {
         font-size: 2rem;
         margin: 0 0 1rem 0; /* Felülírjuk az asztali margókat, már csak alulra kell */
-        width: auto; /* A mobil nézetben ne legyen fix szélesség */
+        width: auto;
     }
     #modal-body ul li p {
         text-align: center;
