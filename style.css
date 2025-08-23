@@ -283,40 +283,63 @@ footer .social-icons a { color: #ffffff;padding: 5px;}
     .nav-menu li { margin: 0; }
     .nav-menu a { font-size: 1.5rem; }
 }
-/* --- Modal ablak javítások (Mobilnézetre) --- */
-@media (max-width: 768px) {
-    /* Kisebb belső tér az ablakban, hogy a tartalom szélesebb lehessen */
-    .modal-content {
-        padding-left: 1.5rem;
-        padding-right: 1.5rem;
-    }
-
-    /* A lista elemek (ikon+cím+szöveg) új, GOLYÓÁLLÓ elrendezése */
-    #modal-body ul li {
-        display: flex;           /* Flexbox használata */
-        flex-direction: column;  /* Az elemek egymás alá kerülnek */
-        align-items: center;     /* Minden elemet VÍZSZINTESEN középre igazít */
-        text-align: center;      /* A szövegek is középre kerülnek */
-        margin-bottom: 2.5rem;
-    }
-
-    /* Az ikonok stílusa */
-    #modal-body ul li i {
-        margin-bottom: 1rem;     /* Már csak alsó margó kell neki */
-        font-size: 2rem;
-    }
-
-    /* A lista elemeken belüli bekezdések is középre kerülnek */
-    #modal-body ul li p {
-        text-align: center;
-    }
-
+/* === MODAL ABLAK STÍLUSOK (MINDEN NÉZETRE) === */
+/* Itt adjuk vissza az elveszett, levegős stílust az asztali nézethez */
+#modal-body ul {
+    list-style: none;
+    padding-left: 0;
 }
-/* --- LÁBLÉC IKON IGAZÍTÁS (minden nézetre) --- */
-/* Ez megoldja, hogy az ikonok tökéletesen egy vonalban legyenek a szöveggel */
+#modal-body ul li {
+    display: flex;
+    align-items: flex-start; /* Az ikon és a szöveg teteje egy vonalban van */
+    margin-bottom: 1.5rem;   /* Térköz a listaelemek között */
+}
+#modal-body ul li i {
+    font-size: 1.8rem;               /* Ikon mérete */
+    color: var(--primary-green);     /* Visszaadjuk a ZÖLD SZÍNT */
+    margin-right: 15px;              /* Térköz az ikon és a szöveg között */
+    margin-top: 5px;                 /* Finomhangolás a függőleges igazításhoz */
+    width: 30px;                     /* Fix szélesség a stabil elrendezéshez */
+}
+#modal-body ul li div p {
+    margin-top: 5px; /* Térköz a cím és a leírás között */
+}
+
+/* === LÁBLÉC IKON IGAZÍTÁS (minden nézetre) === */
 .footer-contact li {
     align-items: center;
 }
 
+/* === MOBILNÉZET FINOMHANGOLÁSA (768px alatt) === */
+@media (max-width: 768px) {
 
-/* === END OF MOBILNAVIGÁCIÓ === 
+    /* --- Árajánlatkérő gombok mobilnézete --- */
+    #quote-form .checkbox-group { display: block; }
+    #quote-form .checkbox-tag { width: 100%; margin-bottom: 0.75rem; }
+    #quote-form .checkbox-tag label { width: 100%; justify-content: center; }
+
+    /* --- Lábléc mobilnézete --- */
+    .footer-container { text-align: center; }
+    .footer-links ul, .footer-contact ul { display: inline-block; text-align: left; margin: 0 auto; }
+    .footer-contact .social-icons { justify-content: center; margin-top: 2rem; }
+    .footer-links, .footer-contact { padding-top: 2rem; margin-top: 2rem; border-top: 1px solid rgba(255, 255, 255, 0.1); }
+
+    /* --- MODAL ABLAK VÉGLEGES MOBIL JAVÍTÁSA --- */
+    .modal-content {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+    #modal-body ul li {
+        flex-direction: column; /* Egymás alá rendezés */
+        align-items: center;    /* Vízszintes középre igazítás */
+        text-align: center;
+    }
+    #modal-body ul li i {
+        font-size: 2rem;
+        margin: 0 0 1rem 0; /* Felülírjuk az asztali margókat, már csak alulra kell */
+        width: auto; /* A mobil nézetben ne legyen fix szélesség */
+    }
+    #modal-body ul li p {
+        text-align: center;
+    }
+}
