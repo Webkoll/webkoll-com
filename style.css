@@ -287,10 +287,7 @@ footer .social-icons a { color: #ffffff;padding: 5px;}
 @media (max-width: 768px) {
 
     /* --- Modal és Blog listák javítása (ikonok problémája) --- */
-    #modal-body ul li,
-    .blog-post ul li {
-        align-items: flex-start; /* Biztosítja a helyes igazítást */
-    }
+    
 
     #modal-body ul li i,
     .blog-post ul li i {
@@ -298,6 +295,7 @@ footer .social-icons a { color: #ffffff;padding: 5px;}
         font-size: 1.5rem;
         margin-right: 15px; 
         margin-top: 3px; /* Finomhangolás a függőleges igazításhoz */
+        align-items: center; /* Biztosítja a helyes igazítást */
     }
 
     /* --- Árajánlatkérő gombok mobilnézete --- */
