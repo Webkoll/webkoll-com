@@ -3,13 +3,21 @@
     "github": "webkoll.com",
     "facebook": "webkoll.com",
     "name": "Kollár Pál",
-    "phone": "+3670",
+    "phone": "+36709055576",
     "instagram": "webkoll.com",
     "profile_pic": "https://res.cloudinary.com/da6yxjaqc/image/upload/v1755776336/mack%C3%B3csal%C3%A1d_vb1exy.webp",
-    "location": "Csobánka",
+    "location": "2014 Csobánka",
     "title": "Ügyvezető",
     "email": "hello@webkoll.com",
     "linkedin": "webkoll.com"
   },
-  "about_image": "https://res.cloudinary.com/da6yxjaqc/image/upload/v1755776336/mack%C3%B3csal%C3%A1d_rdxfye.png"
+  "about_image": "https://res.cloudinary.com/da6yxjaqc/image/upload/v1755950455/webkoll_%C3%BCl%C5%91_programoz%C3%B3_ogqhop.svg",
+  "quote_options": [
+    "Bemutatkozó Oldal (ún. \"Landing Page\")",
+    "Céges Weboldal (Több oldalas)",
+    "Portfólió Oldal (Vizuális bemutatkozáshoz)",
+    "Webáruház / Webshop (Termékek eladásához)",
+    "Meglévő Weboldal Felújítása / Modernizálása",
+    "Egyéb / Egyedi Elképzelés"
+  ]
 }
