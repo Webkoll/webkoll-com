@@ -10,7 +10,11 @@ link: https://adaschall.com/
 
 <!--StartFragment-->
 
-<video autoplay muted loop playsinline src="videos/Adaschall.mp4"></video>
+<video autoplay muted loop playsinline src="<!--StartFragment-->
+
+<https://res.cloudinary.com/da6yxjaqc/video/upload/v1755776810/AdaSchall_lppiav.mp4>
+
+<!--EndFragment-->"></video>
 
 <p>
 
