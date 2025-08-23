@@ -1,6 +1,6 @@
 ---
 title: Föld az űrből – görgetésre életre kel
-image: https://res.cloudinary.com/da6yxjaqc/image/upload/v1755776335/f%C3%B6ld_dkra4h.png
+image: https://res.cloudinary.com/da6yxjaqc/image/upload/v1755776334/f%C3%B6ld_qfg42t.webp
 description: Interaktív landing page, amely a felhasználói görgetésre reagálva
   tárja fel a Föld szépségét és a tudomány hőseit. Egy egyedi, filmszerű élmény,
   ahol a vizuális történetmesélésé a főszerep.
