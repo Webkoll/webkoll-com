@@ -235,56 +235,92 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     // === END OF MOBILMENÜ LOGIKA ===
 
-    // === ŰRLAPOK KEZELÉSE ===
-    function handleFormSubmit(form, feedbackElement) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
+    // === ŰRLAPOK KEZELÉSE (VISSZAÁLLÍTOTT, FORMÁZOTT E-MAIL LOGIKÁVAL) ===
+function handleFormSubmit(form, feedbackElement, isQuoteForm = false) {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-            // Automatikus _replyto beállítása a Formspree számára
-            const emailInput = form.querySelector('input[name="email"]');
-            const replyToInput = form.querySelector('input[name="_replyto"]');
-            if(emailInput && replyToInput) {
-                replyToInput.value = emailInput.value;
-            }
+        // Ha ez az árajánlatkérő űrlap, állítsuk össze a formázott üzenetet
+        if (isQuoteForm) {
+            const name = form.querySelector('#form-name').value;
+            const email = form.querySelector('#form-email').value;
+            const phone = form.querySelector('#form-phone').value || 'Nincs megadva';
+            const type = form.querySelector('#form-type').value;
+            const message = form.querySelector('#form-message').value || 'Nincs megadva';
 
-            const formData = new FormData(form);
-            const action = form.getAttribute('action');
-            feedbackElement.style.display = 'block';
-            feedbackElement.innerHTML = '<h3>Küldés folyamatban...</h3>';
-            form.style.display = 'none';
+            const selectedFeatures = [];
+            form.querySelectorAll('#form-features input[type="checkbox"]:checked').forEach(checkbox => {
+                selectedFeatures.push(checkbox.value);
+            });
+            const featuresText = selectedFeatures.length > 0 ? selectedFeatures.join(', ') : 'Nincs kiválasztva';
 
-            fetch(action, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } })
-                .then(response => {
-                    if (response.ok) {
-                        feedbackElement.innerHTML = '<h3>Köszönjük!</h3><p>Az üzenetedet sikeresen megkaptuk. Hamarosan felvesszük veled a kapcsolatot.</p>';
-                    } else {
-                        response.json().then(data => {
-                             if (Object.hasOwn(data, 'errors')) {
-                                feedbackElement.innerHTML = `<h3>Hiba történt.</h3><p>${data["errors"].map(error => error["message"]).join(", ")}</p>`;
-                             } else {
-                                feedbackElement.innerHTML = '<h3>Hiba történt.</h3><p>Kérlek, próbáld újra később, vagy írj nekünk közvetlenül.</p>';
-                             }
-                        })
-                    }
-                })
-                .catch(error => {
-                    feedbackElement.innerHTML = '<h3>Hálózati hiba.</h3><p>Ellenőrizd az internetkapcsolatodat és próbáld újra.</p>';
-                });
-        });
+            // Rejtett mezők feltöltése a formázott adatokkal
+            form.querySelector('input[name="Üzenet Formázva"]').value = `
+                Új árajánlatkérés érkezett a webkoll.com oldalról!
+                --------------------------------
+                ÜGYFÉL ADATAI:
+                - Név: ${name}
+                - E-mail: ${email}
+                - Telefon: ${phone}
+                --------------------------------
+                PROJEKT RÉSZLETEI:
+                - Weboldal típusa: ${type}
+                - Kért extra funkciók: ${featuresText}
+                --------------------------------
+                PROJEKT LEÍRÁSA:
+                ${message}
+            `;
+            form.querySelector('input[name="_replyto"]').value = email;
+        }
+
+        const formData = new FormData(form);
+        const action = form.getAttribute('action');
+        
+        feedbackElement.style.display = 'block';
+        feedbackElement.innerHTML = '<h3>Küldés folyamatban...</h3>';
+        form.style.display = 'none';
+
+        // Oldal tetejére görgetés
+        const parentSection = form.closest('.content-section');
+        if (parentSection) {
+            parentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        fetch(action, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } })
+            .then(response => {
+                if (response.ok) {
+                    feedbackElement.innerHTML = '<h3>Köszönjük!</h3><p>Az üzenetedet sikeresen megkaptuk. Hamarosan felvesszük veled a kapcsolatot.</p>';
+                } else {
+                    feedbackElement.innerHTML = '<h3>Hiba történt.</h3><p>Kérlek, próbáld újra később, vagy írj nekünk közvetlenül.</p>';
+                }
+            })
+            .catch(error => {
+                feedbackElement.innerHTML = '<h3>Hálózati hiba.</h3><p>Ellenőrizd az internetkapcsolatodat és próbáld újra.</p>';
+            });
+    });
+}
+
+// Árajánlatkérő űrlap inicializálása
+const quoteForm = document.getElementById('quote-form');
+if (quoteForm) {
+    // Adjunk hozzá egy rejtett mezőt a formázott üzenetnek
+    if (!quoteForm.querySelector('input[name="Üzenet Formázva"]')) {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'Üzenet Formázva';
+        quoteForm.appendChild(hiddenInput);
     }
+    const quoteFormFeedback = document.getElementById('form-feedback');
+    handleFormSubmit(quoteForm, quoteFormFeedback, true); // true jelzi, hogy ez az árajánlatkérő
+}
 
-    const quoteForm = document.getElementById('quote-form');
-    if (quoteForm) {
-        const quoteFormFeedback = document.getElementById('form-feedback');
-        handleFormSubmit(quoteForm, quoteFormFeedback);
-    }
-
-    const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
-        const contactFormFeedback = document.getElementById('contact-form-feedback');
-        handleFormSubmit(contactForm, contactFormFeedback);
-    }
-    // === END OF ŰRLAPOK KEZELÉSE ===
+// Kapcsolat űrlap inicializálása
+const contactForm = document.getElementById('contact-form');
+if (contactForm) {
+    const contactFormFeedback = document.getElementById('contact-form-feedback');
+    handleFormSubmit(contactForm, contactFormFeedback); // Itt nincs szükség extra logikára
+}
+// === END OF ŰRLAPOK KEZELÉSE ===
 
     // === LÁBLÉC ÉV FRISSÍTÉSE ===
     const yearSpanFooter = document.getElementById('current-year-footer');
