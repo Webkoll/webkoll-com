@@ -9,6 +9,17 @@
     --font-primary: 'Poppins', sans-serif;
     --font-secondary: 'Montserrat', sans-serif;
 }
+
+/* --- Egyedi Kijelölő Szín (Minden nézetre) --- */
+::selection {
+  background-color: var(--light-green);
+  color: var(--dark-text);
+}
+::-moz-selection { /* Firefox böngészőhöz */
+  background-color: var(--light-green);
+  color: var(--dark-text);
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 body { font-family: var(--font-primary); background-color: var(--background-color); color: var(--dark-text); line-height: 1.6; }
@@ -331,6 +342,31 @@ footer .social-icons a { color: #ffffff;padding: 5px;}
         margin-top: 2rem;
         border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
+
+    .modal-content {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    /* A lista elemek (ikon+cím+szöveg) új elrendezése */
+    #modal-body ul li {
+        display: block;      /* Megszüntetjük a flexbox-ot, hogy egymás alá kerüljenek az elemek */
+        text-align: center;  /* Minden tartalmat középre igazítunk */
+        margin-bottom: 2.5rem; /* Nagyobb térköz a listaelemek között */
+    }
+
+    /* Az ikonok stílusa: középre, a cím fölé */
+    #modal-body ul li i {
+        display: block;         /* Az ikon is külön sorba kerül */
+        margin: 0 auto 1rem auto; /* Térköz alatta és középre igazítás */
+        font-size: 2rem;        /* Legyen egy kicsit hangsúlyosabb */
+    }
+
+    /* A lista elemeken belüli bekezdések is középre kerülnek */
+    #modal-body ul li p {
+        text-align: center;
+    }
+
 }
 
 /* --- LÁBLÉC IKON IGAZÍTÁS (minden nézetre) --- */
@@ -338,4 +374,6 @@ footer .social-icons a { color: #ffffff;padding: 5px;}
 .footer-contact li {
     align-items: center;
 }
+
+
 /* === END OF MOBILNAVIGÁCIÓ === */
