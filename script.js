@@ -177,16 +177,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeModalBtn = document.querySelector('.modal-close');
 
     function openModal(item) {
-        modalTitle.textContent = item.title;
-        if (item.body && typeof marked !== 'undefined') {
-            modalBody.innerHTML = marked.parse(item.body);
-        } else if (item.body) {
-            modalBody.innerHTML = item.body.replace(/\n/g, '<br>'); // Fallback if marked.js fails
-        } else {
-            modalBody.innerHTML = '<p>Nincs elérhető részletes leírás.</p>';
-        }
-        modal.classList.add('active');
+    modalTitle.textContent = item.title;
+    let modalHtml = '';
+
+    // Videó hozzáadása, ha van megadva URL
+    if (item.video_url) {
+        modalHtml += `<video autoplay muted loop playsinline src="${item.video_url}" style="max-width: 100%; border-radius: 8px; margin-bottom: 1rem;"></video>`;
     }
+
+    // Markdown tartalom hozzáadása
+    if (item.body && typeof marked !== 'undefined') {
+        modalHtml += marked.parse(item.body);
+    } else if (item.body) {
+        modalHtml += item.body.replace(/\n/g, '<br>'); // Fallback
+    } else {
+        modalHtml += '<p>Nincs elérhető részletes leírás.</p>';
+    }
+
+    modalBody.innerHTML = modalHtml;
+    modal.classList.add('active');
+}
 
     function closeModal() { modal.classList.remove('active'); modalBody.innerHTML = ''; }
 
