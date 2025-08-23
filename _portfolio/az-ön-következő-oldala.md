@@ -12,7 +12,7 @@ video_url: https://res.cloudinary.com/da6yxjaqc/video/upload/v1755776809/K%C3%B6
     <i class="fa-solid fa-rocket"></i>
 </div>
 
-<p>A weboldal készítés nem csak a kódolásról szól. Egy digitális élmény megteremtése, ami bizalmat épít, ügyfeleket szerez és a márkádat képviseli. Mi ebben hiszünk, és ezért dolgozunk másképp.</p>
+<p>A weboldal készítés nem csak a kódolásról szól. Egy digitális élmény megteremtése, ami bizalmat épít, ügyfeleket szerez és a márkádat képviseli. Mi ebben hiszünk, és ezért dolgozunk másképp.</p><br>
 
 <ul>
     <li>
