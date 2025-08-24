@@ -27,41 +27,127 @@ document.addEventListener('DOMContentLoaded', function() {
     let portfolioData = [];
     let blogData = [];
 
-    // === DINAMIKUS TARTALOM BETÖLTÉSE ===
-    async function loadContent() {
+    // === ÚJ, DINAMIKUS TARTALOMBETÖLTŐ RÉSZ ===
+    async function initializeSite() {
         try {
-            const response = await fetch('data.json');
-            if (!response.ok) throw new Error(`HTTP hiba! Státusz: ${response.status}`);
-            const data = await response.json();
-            portfolioData = data.portfolio; 
-            blogData = data.blog;
-            const portfolioGrid = document.getElementById('portfolio-grid');
-            const blogPosts = document.getElementById('blog-posts');
-            if(portfolioGrid) {
-                portfolioGrid.innerHTML = '';
-                portfolioData.forEach(item => {
-                    const slide = document.createElement('div');
-                    slide.className = 'swiper-slide';
-                    let secondButtonHtml = (item.id === 6) ? `<a href="#arajanlat" class="btn-custom">Árajánlatkérés</a>` : `<a href="${item.link}" target="_blank" class="btn-custom">Weboldal</a>`;
-                    slide.innerHTML = `<div class="portfolio-item"><div class="portfolio-image-container"><img src="${item.image}" alt="${item.title}"></div><div class="portfolio-content"><h3>${item.title}</h3><p>${item.description}</p><div class="portfolio-buttons"><a href="#" class="btn-custom btn-details" data-project-id="${item.id}">Bővebben</a>${secondButtonHtml}</div></div></div>`;
-                    portfolioGrid.appendChild(slide);
-                });
-                if (window.swiper) { window.swiper.update(); }
-            }
-            if(blogPosts) {
-                blogPosts.innerHTML = '';
-                blogData.forEach(post => {
-                    const el = document.createElement('article');
-                    el.className = 'blog-post';
-                    el.innerHTML = `<h3>${post.title}</h3><p class="post-meta">Dátum: ${post.date}</p><p>${post.excerpt}</p><a href="#" class="read-more" data-post-id="${post.id}">Elolvasom &rarr;</a>`;
-                    blogPosts.appendChild(el);
-                });
-            }
-        } catch(error) {
-            console.error("Hiba a 'data.json' betöltésekor: ", error);
+            const [contentResponse, settingsResponse] = await Promise.all([
+                fetch('/api/content.json?v=' + new Date().getTime()),
+                fetch('/_data/settings.json?v=' + new Date().getTime())
+            ]);
+
+            if (!contentResponse.ok) throw new Error(`Hiba a tartalom betöltésekor: /api/content.json`);
+            const content = await contentResponse.json();
+            portfolioData = content.portfolio;
+            blogData = content.blog;
+
+            if (!settingsResponse.ok) throw new Error(`Hiba a beállítások betöltésekor: /_data/settings.json`);
+            const settings = await settingsResponse.json();
+
+            populatePortfolio(portfolioData);
+            populateBlog(blogData);
+            populateSettings(settings);
+
+        } catch (error) {
+            console.error("Hiba az oldal inicializálásakor: ", error);
         }
     }
-    loadContent();
+
+    function populatePortfolio(data) {
+        const portfolioGrid = document.getElementById('portfolio-grid');
+        if (!portfolioGrid) return;
+
+        portfolioGrid.innerHTML = '';
+        data.forEach(item => {
+            const slide = document.createElement('div');
+            slide.className = 'swiper-slide';
+            let secondButtonHtml = (item.title === "Az Ön következő oldala?")
+                ? `<a href="#arajanlat" class="btn-custom">Árajánlatkérés</a>`
+                : `<a href="${item.link}" target="_blank" rel="noopener noreferrer" class="btn-custom">Weboldal</a>`;
+            
+            slide.innerHTML = `
+                <div class="portfolio-item">
+                    <div class="portfolio-image-container"><img src="${item.image}" alt="${item.title}"></div>
+                    <div class="portfolio-content">
+                        <h3>${item.title}</h3>
+                        <p>${item.description}</p>
+                        <div class="portfolio-buttons">
+                            <a href="#" class="btn-custom btn-details" data-project-id="${item.id}">Bővebben</a>
+                            ${secondButtonHtml}
+                        </div>
+                    </div>
+                </div>`;
+            portfolioGrid.appendChild(slide);
+        });
+
+        if (window.swiper) {
+            window.swiper.update();
+        }
+    }
+
+    function populateBlog(data) {
+        const blogPosts = document.getElementById('blog-posts');
+        if (!blogPosts) return;
+
+        blogPosts.innerHTML = '';
+        data.forEach(post => {
+            const el = document.createElement('article');
+            el.className = 'blog-post';
+            el.innerHTML = `
+                <h3>${post.title}</h3>
+                <p class="post-meta">Dátum: ${post.date}</p>
+                <p>${post.excerpt}</p>
+                <a href="#" class="read-more" data-post-id="${post.id}">Elolvasom &rarr;</a>`;
+            blogPosts.appendChild(el);
+        });
+    }
+
+    function populateSettings(settings) {
+        // "Miért mi?" szekció képe
+        const aboutImage = document.getElementById('about-me-image');
+        if (aboutImage && settings.about_image) {
+            aboutImage.src = settings.about_image;
+        }
+
+        // Kapcsolat szekció
+        const contact = settings.contact || {};
+        document.getElementById('contact-profile-pic').src = contact.profile_pic || 'images/mackócsalád.webp';
+        document.getElementById('contact-name').textContent = contact.name || 'Kollár Pál';
+        document.getElementById('contact-job-title').textContent = contact.title || 'Webfejlesztő';
+        document.getElementById('contact-email').href = `mailto:${contact.email || ''}`;
+        document.getElementById('contact-email').textContent = contact.email || '';
+        document.getElementById('contact-phone').href = `tel:${(contact.phone || '').replace(/\s/g, '')}`;
+        document.getElementById('contact-phone').textContent = contact.phone || '';
+        document.getElementById('contact-location').textContent = contact.location || '';
+        document.getElementById('contact-facebook').href = contact.facebook || '#';
+        document.getElementById('contact-instagram').href = contact.instagram || '#';
+        document.getElementById('contact-linkedin').href = contact.linkedin || '#';
+        document.getElementById('contact-github').href = contact.github || '#';
+
+        // Lábléc kapcsolat
+        document.getElementById('footer-contact-email').href = `mailto:${contact.email || ''}`;
+        document.getElementById('footer-contact-email').textContent = contact.email || '';
+        document.getElementById('footer-contact-phone').href = `tel:${(contact.phone || '').replace(/\s/g, '')}`;
+        document.getElementById('footer-contact-phone').textContent = contact.phone || '';
+        document.getElementById('footer-facebook').href = contact.facebook || '#';
+        document.getElementById('footer-instagram').href = contact.instagram || '#';
+        document.getElementById('footer-linkedin').href = contact.linkedin || '#';
+        document.getElementById('footer-github').href = contact.github || '#';
+        document.getElementById('footer-owner').textContent = `${contact.name || 'Kollár Pál'} e.v.`;
+
+        // Árajánlatkérő űrlap opciói
+        const quoteTypeSelect = document.getElementById('form-type');
+        if (quoteTypeSelect && settings.quote_options) {
+            quoteTypeSelect.innerHTML = '';
+            settings.quote_options.forEach(option => {
+                const optEl = document.createElement('option');
+                optEl.value = option;
+                optEl.textContent = option;
+                quoteTypeSelect.appendChild(optEl);
+            });
+        }
+    }
+
+    initializeSite();
     // === END OF DINAMIKUS TARTALOM ===
 
     // === MUNKÁIM SLIDESHOW INICIALIZÁLÁSA ===
@@ -75,7 +161,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (swiperContainer) {
         let isThrottled = false;
         swiperContainer.addEventListener('wheel', (event) => {
-            event.preventDefault(); if (isThrottled) return;
+            event.preventDefault();
+            if (isThrottled) return;
             isThrottled = true;
             if (event.deltaY > 0) { swiper.slideNext(); } else { swiper.slidePrev(); }
             setTimeout(() => { isThrottled = false; }, 800);
@@ -83,36 +170,60 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     // === END OF MUNKÁIM SLIDESHOW ===
 
-    // === MODAL ABLAK LOGIKÁJA ===
+    // === MODAL ABLAK LOGIKÁJA (FRISSÍTVE) ===
     const modal = document.getElementById('portfolio-modal');
     const modalTitle = document.getElementById('modal-title');
     const modalBody = document.getElementById('modal-body');
     const closeModalBtn = document.querySelector('.modal-close');
-    async function openModal(item) {
-        modalTitle.textContent = item.title;
-        modalBody.innerHTML = '<p>Tartalom betöltése...</p>';
-        modal.classList.add('active');
-        if (!item.details_url) { modalBody.innerHTML = '<p>Nincs elérhető részletes leírás.</p>'; return; }
-        try {
-            const response = await fetch(item.details_url);
-            if (!response.ok) throw new Error('A leírás nem található.');
-            modalBody.innerHTML = await response.text();
-        } catch (error) {
-            modalBody.innerHTML = `<p>Hiba a tartalom betöltése közben.</p>`; console.error(error);
-        }
+
+    function openModal(item) {
+    modalTitle.textContent = item.title;
+    let modalHtml = '';
+
+    // Videó hozzáadása, ha van megadva URL
+    if (item.video_url) {
+        modalHtml += `<video autoplay muted loop playsinline src="${item.video_url}" style="max-width: 100%; border-radius: 8px; margin-bottom: 1rem;"></video>`;
     }
+
+    // Markdown tartalom hozzáadása
+    if (item.body && typeof marked !== 'undefined') {
+        modalHtml += marked.parse(item.body);
+    } else if (item.body) {
+        modalHtml += item.body.replace(/\n/g, '<br>'); // Fallback
+    } else {
+        modalHtml += '<p>Nincs elérhető részletes leírás.</p>';
+    }
+
+    modalBody.innerHTML = modalHtml;
+    modal.classList.add('active');
+}
+
     function closeModal() { modal.classList.remove('active'); modalBody.innerHTML = ''; }
+
     document.addEventListener('click', function(e) {
         const detailsButton = e.target.closest('.btn-details');
-        if (detailsButton) { e.preventDefault(); const projectId = parseInt(detailsButton.dataset.projectId); const project = portfolioData.find(p => p.id === projectId); if (project) openModal(project); }
+        if (detailsButton) {
+            e.preventDefault();
+            const projectId = detailsButton.dataset.projectId;
+            const project = portfolioData.find(p => p.id === projectId);
+            if (project) openModal(project);
+        }
         const readMoreLink = e.target.closest('.read-more');
-        if (readMoreLink) { e.preventDefault(); const postId = parseInt(readMoreLink.dataset.postId); const post = blogData.find(p => p.id === postId); if (post) openModal(post); }
-        if (e.target.closest('#modal-body a[href="#arajanlat"]')) { closeModal(); }
+        if (readMoreLink) {
+            e.preventDefault();
+            const postId = readMoreLink.dataset.postId;
+            const post = blogData.find(p => p.id === postId);
+            if (post) openModal(post);
+        }
+        if (e.target.closest('#modal-body a[href="#arajanlat"]')) {
+            closeModal();
+        }
     });
+
     closeModalBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal.classList.contains('active')) closeModal(); });
-    // === END OF MODAL LOGIKÁJA ===
+    // === END OF MODAL LOGIKA ===
 
     // === MOBILMENÜ LOGIKÁJA ===
     const hamburgerTrigger = document.querySelector('.hamburger-trigger');
@@ -122,85 +233,94 @@ document.addEventListener('DOMContentLoaded', function() {
         hamburgerTrigger.addEventListener('click', () => { hamburgerBars.classList.toggle('active'); navMenu.classList.toggle('active'); });
         navMenu.querySelectorAll('a').forEach(link => { link.addEventListener('click', () => { hamburgerBars.classList.remove('active'); navMenu.classList.remove('active'); }); });
     }
-    // === END OF MOBILMENÜ LOGIKÁJA ===
+    // === END OF MOBILMENÜ LOGIKA ===
 
-    // === JAVÍTOTT ŰRLAPKEZELÉS ===
-    function handleFormSubmit(form, feedbackElement) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(form);
-            const action = form.getAttribute('action');
+    // === ŰRLAPOK KEZELÉSE (VISSZAÁLLÍTOTT, FORMÁZOTT E-MAIL LOGIKÁVAL) ===
+function handleFormSubmit(form, feedbackElement, isQuoteForm = false) {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
 
-            // Speciális logika az Árajánlatkérő űrlaphoz
-            if (form.id === 'quote-form') {
-                const name = form.querySelector('#form-name').value;
-                const email = form.querySelector('#form-email').value;
-                const phone = form.querySelector('#form-phone').value || 'Nincs megadva';
-                const type = form.querySelector('#form-type').value;
-                const message = form.querySelector('#form-message').value || 'Nincs megadva';
-                const selectedFeatures = Array.from(form.querySelectorAll('#form-features input:checked')).map(cb => cb.value);
-                const featuresText = selectedFeatures.length > 0 ? selectedFeatures.join(', ') : 'Nincs kiválasztva';
+        // Ha ez az árajánlatkérő űrlap, állítsuk össze a formázott üzenetet
+        if (isQuoteForm) {
+            const name = form.querySelector('#form-name').value;
+            const email = form.querySelector('#form-email').value;
+            const phone = form.querySelector('#form-phone').value || 'Nincs megadva';
+            const type = form.querySelector('#form-type').value;
+            const message = form.querySelector('#form-message').value || 'Nincs megadva';
 
-                const emailBody = `
---------------------------------            
-*** ÜGYFÉL ADATAI: ***
---------------------------------
-Név: ${name}
-E-mail: ${email}
-Telefonszám: ${phone}
+            const selectedFeatures = [];
+            form.querySelectorAll('#form-features input[type="checkbox"]:checked').forEach(checkbox => {
+                selectedFeatures.push(checkbox.value);
+            });
+            const featuresText = selectedFeatures.length > 0 ? selectedFeatures.join(', ') : 'Nincs kiválasztva';
 
---------------------------------
-*** PROJEKT RÉSZLETEI: ***
---------------------------------
-Weboldal Típusa: ${type}
-Kért Extra Funkciók: ${featuresText}
+            // Rejtett mezők feltöltése a formázott adatokkal
+            form.querySelector('input[name="Üzenet Formázva"]').value = `
+                Új árajánlatkérés érkezett a webkoll.com oldalról!
+                --------------------------------
+                ÜGYFÉL ADATAI:
+                - Név: ${name}
+                - E-mail: ${email}
+                - Telefon: ${phone}
+                --------------------------------
+                PROJEKT RÉSZLETEI:
+                - Weboldal típusa: ${type}
+                - Kért extra funkciók: ${featuresText}
+                --------------------------------
+                PROJEKT LEÍRÁSA:
+                ${message}
+            `;
+            form.querySelector('input[name="_replyto"]').value = email;
+        }
 
---------------------------------
-*** ÜZENET / PROJEKT LEÍRÁSA: ***
---------------------------------
-${message}
-********************************
-                `;
-                // A formázott szöveget egy rejtett mezőbe tesszük, ha létezik
-                if (form.querySelector('input[name="Árajánlatkérés Részletei"]')) {
-                    form.querySelector('input[name="Árajánlatkérés Részletei"]').value = emailBody;
+        const formData = new FormData(form);
+        const action = form.getAttribute('action');
+        
+        feedbackElement.style.display = 'block';
+        feedbackElement.innerHTML = '<h3>Küldés folyamatban...</h3>';
+        form.style.display = 'none';
+
+        // Oldal tetejére görgetés
+        const parentSection = form.closest('.content-section');
+        if (parentSection) {
+            parentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        fetch(action, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } })
+            .then(response => {
+                if (response.ok) {
+                    feedbackElement.innerHTML = '<h3>Köszönjük!</h3><p>Az üzenetedet sikeresen megkaptuk. Hamarosan felvesszük veled a kapcsolatot.</p>';
+                } else {
+                    feedbackElement.innerHTML = '<h3>Hiba történt.</h3><p>Kérlek, próbáld újra később, vagy írj nekünk közvetlenül.</p>';
                 }
-                if (form.querySelector('input[name="_replyto"]')) {
-                    form.querySelector('input[name="_replyto"]').value = email;
-                }
-            }
+            })
+            .catch(error => {
+                feedbackElement.innerHTML = '<h3>Hálózati hiba.</h3><p>Ellenőrizd az internetkapcsolatodat és próbáld újra.</p>';
+            });
+    });
+}
 
-            feedbackElement.style.display = 'block';
-            feedbackElement.innerHTML = '<h3>Küldés folyamatban...</h3>';
-            form.style.display = 'none';
-            
-            fetch(action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } })
-                .then(response => {
-                    if (response.ok) {
-                        feedbackElement.innerHTML = '<h3>Köszönjük!</h3><p>Az üzenetedet sikeresen megkaptuk.</p>';
-                    } else {
-                        feedbackElement.innerHTML = '<h3>Hiba történt.</h3><p>Kérlek, próbáld újra később.</p>';
-                        form.style.display = 'flex';
-                    }
-                })
-                .catch(error => {
-                    feedbackElement.innerHTML = '<h3>Hálózati hiba.</h3><p>Ellenőrizd az internetkapcsolatodat.</p>';
-                    form.style.display = 'flex';
-                });
-        });
+// Árajánlatkérő űrlap inicializálása
+const quoteForm = document.getElementById('quote-form');
+if (quoteForm) {
+    // Adjunk hozzá egy rejtett mezőt a formázott üzenetnek
+    if (!quoteForm.querySelector('input[name="Üzenet Formázva"]')) {
+        const hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'Üzenet Formázva';
+        quoteForm.appendChild(hiddenInput);
     }
+    const quoteFormFeedback = document.getElementById('form-feedback');
+    handleFormSubmit(quoteForm, quoteFormFeedback, true); // true jelzi, hogy ez az árajánlatkérő
+}
 
-    const quoteForm = document.getElementById('quote-form');
-    if (quoteForm) {
-        const quoteFormFeedback = document.getElementById('form-feedback');
-        handleFormSubmit(quoteForm, quoteFormFeedback, true);
-    }
-    const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
-        const contactFormFeedback = document.getElementById('contact-form-feedback');
-        handleFormSubmit(contactForm, contactFormFeedback);
-    }
-    // === END OF ŰRLAPOK KEZELÉSE ===
+// Kapcsolat űrlap inicializálása
+const contactForm = document.getElementById('contact-form');
+if (contactForm) {
+    const contactFormFeedback = document.getElementById('contact-form-feedback');
+    handleFormSubmit(contactForm, contactFormFeedback); // Itt nincs szükség extra logikára
+}
+// === END OF ŰRLAPOK KEZELÉSE ===
 
     // === LÁBLÉC ÉV FRISSÍTÉSE ===
     const yearSpanFooter = document.getElementById('current-year-footer');
