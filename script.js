@@ -235,13 +235,30 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     // === END OF MOBILMENÜ LOGIKA ===
 
-    // === ŰRLAPOK KEZELÉSE (VISSZAÁLLÍTOTT, FORMÁZOTT E-MAIL LOGIKÁVAL) ===
+   // ===================================================================
+// === JAVÍTOTT ÉS TELJES ŰRLAPKEZELÉS ===
+// ===================================================================
+
+/**
+ * Ez egy általános, újrahasznosítható funkció, ami bármelyik űrlap elküldését kezeli.
+ * @param {HTMLElement} form - A HTML űrlap elem, amit kezelni kell.
+ * @param {HTMLElement} feedbackElement - A HTML elem, ahol a visszajelzések megjelennek.
+ * @param {boolean} isQuoteForm - Egy kapcsoló, ami jelzi, ha ez a speciális árajánlatkérő űrlap.
+ */
 function handleFormSubmit(form, feedbackElement, isQuoteForm = false) {
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
+        e.preventDefault(); // Megakadályozzuk az oldal újratöltődését küldéskor.
+        
+        const action = form.getAttribute('action');
+        let formDataToSend;
 
-        // Ha ez az árajánlatkérő űrlap, állítsuk össze a formázott üzenetet
+        // ==========================================================
+        // === KÜLÖN LOGIKA AZ ÁRAJÁNLATKÉRŐ ŰRLAP SZÁMÁRA ===
+        // ==========================================================
         if (isQuoteForm) {
+            formDataToSend = new FormData(); // Üres "csomagot" hozunk létre, hogy teljes kontrollunk legyen.
+
+            // 1. Begyűjtjük az adatokat a mezőkből.
             const name = form.querySelector('#form-name').value;
             const email = form.querySelector('#form-email').value;
             const phone = form.querySelector('#form-phone').value || 'Nincs megadva';
@@ -253,10 +270,10 @@ function handleFormSubmit(form, feedbackElement, isQuoteForm = false) {
                 selectedFeatures.push(checkbox.value);
             });
             const featuresText = selectedFeatures.length > 0 ? selectedFeatures.join(', ') : 'Nincs kiválasztva';
-
-            // Rejtett mezők feltöltése a formázott adatokkal
-            form.querySelector('input[name="Üzenet Formázva"]').value = `
-                --------------------------------            
+            
+            // 2. Összeállítjuk a szép, formázott e-mail szövegét.
+            const emailBody = `
+--------------------------------            
 *** ÜGYFÉL ADATAI: ***
 --------------------------------
 Név: ${name}
@@ -275,55 +292,68 @@ Kért Extra Funkciók: ${featuresText}
 ${message}
 ********************************
             `;
-            form.querySelector('input[name="_replyto"]').value = email;
+            
+            // 3. Manuálisan bepakoljuk a "csomagba" csak azt, amit el akarunk küldeni.
+            formDataToSend.append('_subject', form.querySelector('input[name="_subject"]').value);
+            formDataToSend.append('_replyto', email);
+            formDataToSend.append('Árajánlatkérés Részletei', emailBody);
+        
+        // ==========================================================
+        // === ALAP LOGIKA A KAPCSOLAT (ÉS MÁS SIMA) ŰRLAPOKHOZ ===
+        // ==========================================================
+        } else {
+            // Ha nem az árajánlatkérő űrlapról van szó, egyszerűen minden mezőt összegyűjtünk.
+            formDataToSend = new FormData(form);
         }
 
-        const formData = new FormData(form);
-        const action = form.getAttribute('action');
-        
-        feedbackElement.style.display = 'block';
-        feedbackElement.innerHTML = '<h3>Küldés folyamatban...</h3>';
-        form.style.display = 'none';
-
-        // Oldal tetejére görgetés
+        // Vizuális visszajelzés és a felhasználó felgörgetése a szekció tetejére.
         const parentSection = form.closest('.content-section');
+        form.style.display = 'none';
+        feedbackElement.style.display = 'block';
+        feedbackElement.innerHTML = '<h3>Küldés folyamatban...</h3><p>Kérlek, várj egy pillanatot.</p>';
+        
         if (parentSection) {
             parentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        fetch(action, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } })
-            .then(response => {
-                if (response.ok) {
-                    feedbackElement.innerHTML = '<h3>Köszönjük!</h3><p>Az üzenetedet sikeresen megkaptuk. Hamarosan felvesszük veled a kapcsolatot.</p>';
-                } else {
-                    feedbackElement.innerHTML = '<h3>Hiba történt.</h3><p>Kérlek, próbáld újra később, vagy írj nekünk közvetlenül.</p>';
-                }
-            })
-            .catch(error => {
-                feedbackElement.innerHTML = '<h3>Hálózati hiba.</h3><p>Ellenőrizd az internetkapcsolatodat és próbáld újra.</p>';
-            });
+        // Adatok elküldése a Formspree-nek.
+        fetch(action, {
+            method: 'POST',
+            body: formDataToSend,
+            headers: { 'Accept': 'application/json' }
+        })
+        .then(response => {
+            if (response.ok) {
+                feedbackElement.innerHTML = '<h3>Köszönjük!</h3><p>Az üzenetedet sikeresen megkaptuk. Hamarosan felvesszük veled a kapcsolatot.</p>';
+            } else {
+                feedbackElement.innerHTML = `<h3>Hiba történt.</h3><p>Kérlek, próbáld újra, vagy írj nekünk közvetlenül a <a href="mailto:hello@webkoll.com">hello@webkoll.com</a> címre.</p>`;
+                form.style.display = 'flex'; // Hiba esetén újra megjelenítjük az űrlapot.
+            }
+        })
+        .catch(error => {
+            feedbackElement.innerHTML = `<h3>Hálózati hiba történt.</h3><p>Kérlek, ellenőrizd az internetkapcsolatodat és próbáld újra.</p>`;
+            form.style.display = 'flex'; // Hiba esetén újra megjelenítjük az űrlapot.
+        });
     });
 }
 
-// Árajánlatkérő űrlap inicializálása
+// === AZ ŰRLAPOK INICIALIZÁLÁSA ===
+// Itt mondjuk meg a programnak, hogy melyik űrlapra melyik logikát alkalmazza.
+
+// 1. Árajánlatkérő űrlap
 const quoteForm = document.getElementById('quote-form');
 if (quoteForm) {
-    // Adjunk hozzá egy rejtett mezőt a formázott üzenetnek
-    if (!quoteForm.querySelector('input[name="Üzenet Formázva"]')) {
-        const hiddenInput = document.createElement('input');
-        hiddenInput.type = 'hidden';
-        hiddenInput.name = 'Üzenet Formázva';
-        quoteForm.appendChild(hiddenInput);
-    }
     const quoteFormFeedback = document.getElementById('form-feedback');
-    handleFormSubmit(quoteForm, quoteFormFeedback, true); // true jelzi, hogy ez az árajánlatkérő
+    // A 'true' kapcsolóval jelezzük, hogy a speciális, formázott e-mail logikát kell használnia.
+    handleFormSubmit(quoteForm, quoteFormFeedback, true);
 }
 
-// Kapcsolat űrlap inicializálása
+// 2. Kapcsolat űrlap
 const contactForm = document.getElementById('contact-form');
 if (contactForm) {
     const contactFormFeedback = document.getElementById('contact-form-feedback');
-    handleFormSubmit(contactForm, contactFormFeedback); // Itt nincs szükség extra logikára
+    // Itt a kapcsoló nélkül hívjuk meg, így az alapértelmezett, egyszerű küldést hajtja végre.
+    handleFormSubmit(contactForm, contactFormFeedback);
 }
 // === END OF ŰRLAPOK KEZELÉSE ===
 
