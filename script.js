@@ -256,19 +256,24 @@ function handleFormSubmit(form, feedbackElement, isQuoteForm = false) {
 
             // Rejtett mezők feltöltése a formázott adatokkal
             form.querySelector('input[name="Üzenet Formázva"]').value = `
-                Új árajánlatkérés érkezett a webkoll.com oldalról!
-                --------------------------------
-                ÜGYFÉL ADATAI:
-                - Név: ${name}
-                - E-mail: ${email}
-                - Telefon: ${phone}
-                --------------------------------
-                PROJEKT RÉSZLETEI:
-                - Weboldal típusa: ${type}
-                - Kért extra funkciók: ${featuresText}
-                --------------------------------
-                PROJEKT LEÍRÁSA:
-                ${message}
+                --------------------------------            
+*** ÜGYFÉL ADATAI: ***
+--------------------------------
+Név: ${name}
+E-mail: ${email}
+Telefonszám: ${phone}
+
+--------------------------------
+*** PROJEKT RÉSZLETEI: ***
+--------------------------------
+Weboldal Típusa: ${type}
+Kért Extra Funkciók: ${featuresText}
+
+--------------------------------
+*** ÜZENET / PROJEKT LEÍRÁSA: ***
+--------------------------------
+${message}
+********************************
             `;
             form.querySelector('input[name="_replyto"]').value = email;
         }
